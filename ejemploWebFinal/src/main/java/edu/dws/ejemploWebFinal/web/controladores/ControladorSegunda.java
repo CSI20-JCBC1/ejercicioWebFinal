@@ -1,13 +1,14 @@
 package edu.dws.ejemploWebFinal.web.controladores;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,6 +25,9 @@ import edu.dws.ejemploWebFinal.aplicacion.impl.Consultas;
 
 @Controller
 public class ControladorSegunda {
+	
+	@Autowired
+	 Consultas consulta=new Consultas();
 	
 	 protected final Log logger = LogFactory.getLog(getClass());
 	    
@@ -58,8 +62,7 @@ public class ControladorSegunda {
 	        miModelo.put("mensaje","Todo ok");
 	        miModelo.put("listaAlumnos", alumnos);
 	        
-	       Consultas consulta=new Consultas();
-	       consulta.insertarUnAlumno(alumnoV);
+	    consulta.insertarUnAlumno(alumnoV);
 	        
 	    	return new ModelAndView("segunda", "miModelo", miModelo);
 	    }

@@ -2,7 +2,6 @@ package edu.dws.ejemploWebFinal.aplicacion;
 
 import java.util.Properties;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import edu.dws.ejemploWebFinal.aplicacion.dal.Alumno;
 @Configuration
 @ComponentScan
 @PropertySource("classpath:application.properties")
-@EnableJpaRepositories("edu.dws.ejemploWeb.aplicacion.dal")
+@EnableJpaRepositories("edu.dws.ejemploWebFinal.aplicacion.dal")
 public class AplicacionConfiguracionContexto {
 
 	@Autowired
@@ -33,35 +32,36 @@ public class AplicacionConfiguracionContexto {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-
 		dataSource.setDriverClassName(env.getProperty("db.driver"));
 		dataSource.setUrl(env.getProperty("db.url"));
 		dataSource.setUsername(env.getProperty("db.username"));
 		dataSource.setPassword(env.getProperty("db.password"));
-
 		return dataSource;
 	}
 
 	@Bean
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setDataSource(dataSource());
-		em.setPackagesToScan(Alumno.class.getPackage().getName());
 
-		HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
-		jpaVendorAdapter.setDatabase(Database.POSTGRESQL);
-		jpaVendorAdapter.setDatabasePlatform(env.getProperty("org.hibernate.dialect.PostgreSQLDialect"));
-		jpaVendorAdapter.setGenerateDdl(env.getProperty("hibernate.generateDdl", Boolean.class));
-		jpaVendorAdapter.setShowSql(env.getProperty("hibernate.show_sql", Boolean.class));
-		em.setJpaVendorAdapter(jpaVendorAdapter);
+		LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+		emf.setDataSource(dataSource());
+		emf.setPackagesToScan(Alumno.class.getPackage().getName());
+
+		HibernateJpaVendorAdapter hibernateJpa = new HibernateJpaVendorAdapter();
+		hibernateJpa.setDatabase(Database.POSTGRESQL);
+		hibernateJpa.setDatabasePlatform(env.getProperty("hibernate.dialect"));
+		hibernateJpa.setGenerateDdl(env.getProperty("hibernate.generateDdl", Boolean.class));
+		hibernateJpa.setShowSql(env.getProperty("hibernate.show_sql", Boolean.class));
+		emf.setJpaVendorAdapter(hibernateJpa);
 
 		Properties jpaProperties = new Properties();
 		jpaProperties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
 		jpaProperties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
 		jpaProperties.put("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
-		em.setJpaProperties(jpaProperties);
+		// jpaProperties.put("hibernate.bytecode.provider",
+		// contextoPropiedades.getProperty("hibernate.bytecode.provider"));
+		emf.setJpaProperties(jpaProperties);
 
-		return em;
+		return emf;
 	}
 
 	@Bean

@@ -7,15 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.dws.ejemploWebFinal.aplicacion.dal.Alumno;
 import edu.dws.ejemploWebFinal.aplicacion.dal.AlumnoServicio;
 
-
-@Service
+@Service(value="Consultas")
 public class Consultas {
 	
 	@Autowired
-	private AlumnoServicio alu;
+	private AlumnoServicio alumnoIn;
 	
 	@Transactional
 	public void insertarUnAlumno(Alumno alumno) {
-		alu.save(alumno);
+		alumnoIn.save(alumno);
 	}
 }
